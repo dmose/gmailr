@@ -99,28 +99,44 @@ Gmailr.init(function(G) {
       G.$('#gmailr #status').html(msg);
     }
     
-    function tzExit() {
+    function disable() {
       pageMessages.showAll();
 
+      status("&nbsp;");
+      
       // XXX need to unhide all the stuff      
       // XXX need to get rid of all the observers      
     }
     
-    
     function startup() {
       G.insertCss(getData('css_path'));
-      G.insertTop($("<div id='gmailr'><span id='status'></span><button id='tzExit' style='float:right;'>X</button></div>"));
-
-      setupObservers();
-          
+      G.insertTop($("<div id='gmailr'><span id='status'></span>" +
+                    "<span id='toggle' style='float:right'>" +
+                    "<input id='tzEnabled' type='checkbox' checked/>" +
+                    "&nbsp;triage mode enabled</span></div>"));
+                    
+      G.$("#tzEnabled").bind('click', function (aEvent) {
+        if (aEvent.target.checked) {
+          enable();
+        } else {
+          disable();
+        }
+      });
+      
+      enable();
+    }
+    
+    function enable() {
+  
       pageMessages.ensureMaxVisible(3);
 
       status("welcome to tZero. Things should feel a bit more managable now.");      
 
-      G.$("#tzExit").bind('click', tzExit);
+      setupObservers();
+
       setTimeout(hideCounts, 500);
     }
-    
+
     function setupObservers() {
       G.observe('viewChanged', function onViewChanged() {
         console.log("viewChanged observer called\n");
